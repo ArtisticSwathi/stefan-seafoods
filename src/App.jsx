@@ -73,7 +73,7 @@ export default function App() {
         <About />
 
         {/* SHOP SECTION */}
-        <div id="shop" style={{ minHeight: '100vh', scrollSnapAlign: 'start', display: 'flex', flexDirection: 'column', alignItems: 'center', paddingTop: '150px', paddingLeft: '50px', paddingRight: '50px' }}>
+        <div id="shop" style={{ minHeight: '100vh', scrollSnapAlign: 'start', display: 'flex', flexDirection: 'column', alignItems: 'center', paddingTop: '63px', paddingLeft: '50px', paddingRight: '50px' }}>
           <h2 style={{ color: '#0A2540', fontSize: '3rem', fontWeight: '900', marginBottom: '20px' }}>Our Fresh Catch</h2>
           
           <div style={{ display: 'flex', gap: '15px', marginBottom: '40px' }}>
