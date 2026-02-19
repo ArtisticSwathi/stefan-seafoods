@@ -10,10 +10,11 @@ import About from './components/About.jsx';
 import ProductCard from './components/ProductCard.jsx';
 import Contact from './components/Contact.jsx';
 import MovingTruck from './components/MovingTruck.jsx';
-
+import Checkout from './components/Checkout.jsx';
 export default function App() {
   // --- 2. STATE (The "Memory" of your app) ---
   const [cart, setCart] = useState([]);
+  const [view, setView] = useState('shop');
   const [filter, setFilter] = useState('all');
   const [userName, setUserName] = useState('');
   const [userPhone, setUserPhone] = useState('');
@@ -52,13 +53,13 @@ export default function App() {
       `}</style>
 
       <div style={{ fontFamily: 'sans-serif', position: 'relative' }}>
-        <Navbar />
+        <Navbar onCartClick={() => setView('checkout')} />
 
         {/* FIXED BLUE BACKGROUND */}
         <div style={{ position: 'fixed', top: 0, left: 0, width: '100vw', height: '100vh', background: 'linear-gradient(135deg, #1ca3de 0%, #7ed0f5 70%, #ffffff 98%)', zIndex: -1 }}></div>
 
         {/* 3D TRUCK LAYER */}
-        <div style={{ position: 'fixed', top: 0, left: 0, width: '100vw', height: '100vh', zIndex: 50, pointerEvents: 'none' }}>
+        <div style={{ position: 'fixed', top: 0, left: 0, width: '100vw', height: '100vh', zIndex: 1, pointerEvents: 'none' }}>
           <Canvas gl={{ antialias: true, toneMapping: THREE.NoToneMapping }}>
             <OrthographicCamera makeDefault position={[0, 0, 10]} zoom={100} />
             <ambientLight intensity={2} />
@@ -103,6 +104,7 @@ export default function App() {
           <span style={{ color: 'white', fontSize: '30px' }}>✆</span>
         </div>
       </div>
+{view === 'checkout' && <Checkout onBack={() => setView('shop')} />}
     </>
   );
 }

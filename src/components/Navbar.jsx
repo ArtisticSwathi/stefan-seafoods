@@ -1,4 +1,4 @@
-export default function Navbar() { 
+export default function Navbar({ onCartClick }) { 
   return (
     <nav style={{ 
       display: 'flex', 
@@ -19,6 +19,12 @@ export default function Navbar() {
         <a href="#about" style={{ textDecoration: 'none', color: 'inherit' }}>About</a>
         <a href="#shop" style={{ textDecoration: 'none', color: 'inherit' }}>Shop</a>
         <a href="#contact" style={{ textDecoration: 'none', color: 'inherit' }}>Contact Us</a>
+            <div 
+            onClick={onCartClick} 
+            style={{ cursor: 'pointer', marginLeft: '20px', fontWeight: 'bold', color: '#1ca3de' }}
+          >
+            🛒 Cart
+          </div>
       </div>
     </nav>
   );
