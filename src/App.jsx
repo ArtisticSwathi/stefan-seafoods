@@ -3,7 +3,6 @@ import { Canvas } from '@react-three/fiber';
 import { OrthographicCamera } from '@react-three/drei';
 import * as THREE from 'three';
 
-// --- 1. IMPORT ALL YOUR COMPONENTS ---
 import Navbar from './components/Navbar.jsx';
 import Hero from './components/Hero.jsx';
 import About from './components/About.jsx';
@@ -11,16 +10,15 @@ import ProductCard from './components/ProductCard.jsx';
 import Contact from './components/Contact.jsx';
 import MovingTruck from './components/MovingTruck.jsx';
 import Checkout from './components/Checkout.jsx';
+
 export default function App() {
-  // --- 2. STATE (The "Memory" of your app) ---
   const [cart, setCart] = useState([]);
-  const [view, setView] = useState('shop');
+  const [view, setView] = useState('main'); 
   const [filter, setFilter] = useState('all');
   const [userName, setUserName] = useState('');
   const [userPhone, setUserPhone] = useState('');
   const [userAddress, setUserAddress] = useState('');
 
-  // --- 3. DATA (Your products list) ---
   const products = [
     { id: 1, name: 'Fresh Salmon', price: 1800, img: '/fish1.jpg', category: 'fish', stock: true },
     { id: 2, name: 'King Prawns', price: 950, img: '/fish2.jpg', category: 'prawn', stock: true },
@@ -31,17 +29,25 @@ export default function App() {
     { id: 7, name: 'White Pomfret', price: 1400, img: '/fish7.jpg', category: 'fish', stock: true }
   ];
 
-  // Logic to filter the fish based on category
   const filteredProducts = filter === 'all' ? products : products.filter(p => p.category === filter);
 
-  // --- 4. LOGIC (The WhatsApp Order function) ---
+  const handleAddToCart = (product, quantity) => {
+    setCart(prevCart => {
+      const existingItem = prevCart.find(item => item.id === product.id);
+      if (existingItem) {
+        return prevCart.map(item =>
+          item.id === product.id ? { ...item, quantity: item.quantity + quantity } : item
+        );
+      }
+      return [...prevCart, { ...product, quantity: quantity }];
+    });
+  };
+
   const handleOrder = () => {
     if (!userName || !userPhone || !userAddress) return alert("Please fill all delivery details!");
     if (cart.length === 0) return alert("Your cart is empty!");
-
-    const orderList = cart.map(item => `• ${item.name} - ₹${item.price}`).join("\n");
+    const orderList = cart.map(item => `• ${item.name} (Qty: ${item.quantity}) - ₹${item.price * item.quantity}`).join("\n");
     const message = `Hello Stefan Sea Foods,\n\nName: ${userName}\nPhone: ${userPhone}\nAddress: ${userAddress}\n\nOrder Details:\n${orderList}`;
-    
     window.open(`https://wa.me/919363622272?text=${encodeURIComponent(message)}`, "_blank");
   };
 
@@ -53,12 +59,10 @@ export default function App() {
       `}</style>
 
       <div style={{ fontFamily: 'sans-serif', position: 'relative' }}>
-        <Navbar onCartClick={() => setView('checkout')} />
+        <Navbar setView={setView} />
 
-        {/* FIXED BLUE BACKGROUND */}
         <div style={{ position: 'fixed', top: 0, left: 0, width: '100vw', height: '100vh', background: 'linear-gradient(135deg, #1ca3de 0%, #7ed0f5 70%, #ffffff 98%)', zIndex: -1 }}></div>
 
-        {/* 3D TRUCK LAYER */}
         <div style={{ position: 'fixed', top: 0, left: 0, width: '100vw', height: '100vh', zIndex: 1, pointerEvents: 'none' }}>
           <Canvas gl={{ antialias: true, toneMapping: THREE.NoToneMapping }}>
             <OrthographicCamera makeDefault position={[0, 0, 10]} zoom={100} />
@@ -69,42 +73,58 @@ export default function App() {
           </Canvas>
         </div>
 
-        {/* PAGE SECTIONS */}
-        <Hero />
-        <About />
+{view === 'checkout' ? (
+          <Checkout 
+            cart={cart} 
+            setCart={setCart} 
+            onBack={() => setView('main')} 
+            userName={userName} setUserName={setUserName}
+            userPhone={userPhone} setUserPhone={setUserPhone}
+            userAddress={userAddress} setUserAddress={setUserAddress}
+            handleOrder={handleOrder}
+          />
+        ) : (
+          <div>
+            <div id="home"><Hero /></div>
+            <div id="about"><About /></div>
+            
+            <div id="shop" style={{ minHeight: '100vh', scrollSnapAlign: 'start', display: 'flex', flexDirection: 'column', alignItems: 'center', paddingTop: '80px', paddingLeft: '50px', paddingRight: '50px' }}>
+              <h2 style={{ color: '#0A2540', fontSize: '3rem', fontWeight: '900', marginBottom: '20px' }}>Our Fresh Catch</h2>
+              
+              <div style={{ display: 'flex', gap: '15px', marginBottom: '40px' }}>
+                {['all', 'fish', 'prawn', 'crab'].map((cat) => (
+                  <button key={cat} onClick={() => setFilter(cat)} style={{ padding: '10px 25px', borderRadius: '20px', border: 'none', backgroundColor: filter === cat ? '#1ca3de' : 'white', color: filter === cat ? 'white' : '#0A2540', fontWeight: 'bold', cursor: 'pointer', pointerEvents: 'auto' }}>
+                    {cat}
+                  </button>
+                ))}
+              </div>
+              
+              {/* THIS IS THE UPDATED 4-COLUMN CSS GRID */}
+{/* THIS IS THE UPDATED FLEXBOX CONTAINER FOR PERFECT CENTERING */}
+              <div style={{ 
+                display: 'flex', 
+                flexWrap: 'wrap',
+                justifyContent: 'center', 
+                gap: '25px', 
+                width: '100%',
+                maxWidth: '1200px' 
+              }}>
+                {filteredProducts.map(p => (
+                  <ProductCard key={p.id} product={p} onAddToCart={handleAddToCart} />
+                ))}
+              </div>
+            </div>
 
-        {/* SHOP SECTION */}
-        <div id="shop" style={{ minHeight: '100vh', scrollSnapAlign: 'start', display: 'flex', flexDirection: 'column', alignItems: 'center', paddingTop: '63px', paddingLeft: '50px', paddingRight: '50px' }}>
-          <h2 style={{ color: '#0A2540', fontSize: '3rem', fontWeight: '900', marginBottom: '20px' }}>Our Fresh Catch</h2>
-          
-          <div style={{ display: 'flex', gap: '15px', marginBottom: '40px' }}>
-            {['all', 'fish', 'prawn', 'crab'].map((cat) => (
-              <button key={cat} onClick={() => setFilter(cat)} style={{ padding: '10px 25px', borderRadius: '20px', border: 'none', backgroundColor: filter === cat ? '#1ca3de' : 'white', color: filter === cat ? 'white' : '#0A2540', fontWeight: 'bold', cursor: 'pointer' }}>
-                {cat}
-              </button>
-            ))}
+            <div id="contact">
+              <Contact userName={userName} setUserName={setUserName} userPhone={userPhone} setUserPhone={setUserPhone} userAddress={userAddress} setUserAddress={setUserAddress} handleOrder={handleOrder} />
+            </div>
+            
+            <div onClick={() => window.open('https://wa.me/919363622272', '_blank')} style={{ position: 'fixed', bottom: '30px', right: '30px', width: '60px', height: '60px', backgroundColor: '#25D366', borderRadius: '50%', display: 'flex', justifyContent: 'center', alignItems: 'center', zIndex: 100, cursor: 'pointer', boxShadow: '0 10px 20px rgba(0,0,0,0.2)', pointerEvents: 'auto' }}>
+              <span style={{ color: 'white', fontSize: '30px' }}>✆</span>
+            </div>
           </div>
-          
-          <div style={{ display: 'flex', gap: '25px', flexWrap: 'wrap', justifyContent: 'center', maxWidth: '1200px' }}>
-            {filteredProducts.map(p => (
-              <ProductCard key={p.id} product={p} onAddToCart={(item) => setCart([...cart, item])} />
-            ))}
-          </div>
-        </div>
-
-        <Contact 
-          userName={userName} setUserName={setUserName}
-          userPhone={userPhone} setUserPhone={setUserPhone}
-          userAddress={userAddress} setUserAddress={setUserAddress}
-          handleOrder={handleOrder}
-        />
-
-        {/* Floating WhatsApp Button */}
-        <div onClick={() => window.open('https://wa.me/919363622272', '_blank')} style={{ position: 'fixed', bottom: '30px', right: '30px', width: '60px', height: '60px', backgroundColor: '#25D366', borderRadius: '50%', display: 'flex', justifyContent: 'center', alignItems: 'center', zIndex: 100, cursor: 'pointer', boxShadow: '0 10px 20px rgba(0,0,0,0.2)' }}>
-          <span style={{ color: 'white', fontSize: '30px' }}>✆</span>
-        </div>
+        )}
       </div>
-{view === 'checkout' && <Checkout onBack={() => setView('shop')} />}
     </>
   );
 }
