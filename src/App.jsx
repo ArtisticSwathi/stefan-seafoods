@@ -48,7 +48,7 @@ export default function App() {
     if (cart.length === 0) return alert("Your cart is empty!");
     const orderList = cart.map(item => `• ${item.name} (Qty: ${item.quantity}) - ₹${item.price * item.quantity}`).join("\n");
     const message = `Hello Stefan Sea Foods,\n\nName: ${userName}\nPhone: ${userPhone}\nAddress: ${userAddress}\n\nOrder Details:\n${orderList}`;
-    window.open(`https://wa.me/919363622272?text=${encodeURIComponent(message)}`, "_blank");
+    window.open(`https://wa.me/918056766046?text=${encodeURIComponent(message)}`, "_blank");
   };
 
   return (
@@ -115,8 +115,8 @@ export default function App() {
               </div>
             </div>
 
-            <div id="contact">
-              <Contact userName={userName} setUserName={setUserName} userPhone={userPhone} setUserPhone={setUserPhone} userAddress={userAddress} setUserAddress={setUserAddress} handleOrder={handleOrder} />
+<div id="contact">
+              <Contact />
             </div>
             
             <div onClick={() => window.open('https://wa.me/919363622272', '_blank')} style={{ position: 'fixed', bottom: '30px', right: '30px', width: '60px', height: '60px', backgroundColor: '#25D366', borderRadius: '50%', display: 'flex', justifyContent: 'center', alignItems: 'center', zIndex: 100, cursor: 'pointer', boxShadow: '0 10px 20px rgba(0,0,0,0.2)', pointerEvents: 'auto' }}>

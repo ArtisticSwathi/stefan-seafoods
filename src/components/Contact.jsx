@@ -1,68 +1,103 @@
-// src/components/Contact.jsx
-
-const contactDetailStyle = {
-  display: 'flex',
-  alignItems: 'center',
-  gap: '15px',
-  color: '#0e253d',
-  fontWeight: 'bold',
-  fontSize: '1.1rem',
-  backgroundColor: 'rgba(255, 255, 255, 0.7)', 
-  padding: '12px 25px',
-  borderRadius: '12px',
-  width: 'fit-content', // This makes each box only as wide as the text
-  boxShadow: '0 4px 15px rgba(0,0,0,0.1)'
-};
+import React from 'react';
 
 export default function Contact() {
   return (
-    <div id="contact" style={{ 
-      minHeight: '100vh', 
-      scrollSnapAlign: 'start', 
+    <div style={{
+      width: '100%',
+      minHeight: '60vh', // Takes up a good chunk of the bottom screen
       display: 'flex',
-      alignItems: 'center',
       justifyContent: 'center',
-      padding: '20px 40px',
-      boxSizing: 'border-box'
+      alignItems: 'center',
+      padding: '50px 20px',
+      boxSizing: 'border-box',
+      scrollSnapAlign: 'start'
     }}>
-      <div style={{ 
-        backgroundImage: 'linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)), url("/contact-fish.jpg")',
-        backgroundSize: 'cover',
-        backgroundPosition: 'center',
-        padding: '60px 40px', // Shorter padding for a "thinner" box
-        borderRadius: '50px', 
-        boxShadow: '0 25px 50px rgba(0,0,0,0.2)',
-        textAlign: 'center',
-        maxWidth: '1350px', // Extra wide to match the second image
-        width: '95%',
+      <div style={{
+        width: '100%',
+        maxWidth: '1200px',
+        borderRadius: '30px',
+        overflow: 'hidden',
+        position: 'relative',
         display: 'flex',
         flexDirection: 'column',
-        alignItems: 'center', // Centers everything inside
-        gap: '20px' // Closer spacing between items
+        alignItems: 'center',
+        padding: '80px 20px',
+        textAlign: 'center',
+        boxShadow: '0 20px 40px rgba(0,0,0,0.2)'
       }}>
         
-        <h2 style={{ color: '#ffffff', fontSize: '4rem', margin: 0, fontWeight: '900' }}>
+        {/* BACKGROUND IMAGE WITH DARK OVERLAY */}
+        <div style={{
+          position: 'absolute',
+          top: 0, left: 0, right: 0, bottom: 0,
+          backgroundImage: 'url(/fish1.jpg)', // Using one of your fish images for the background
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+          zIndex: -2
+        }}></div>
+        <div style={{
+          position: 'absolute',
+          top: 0, left: 0, right: 0, bottom: 0,
+          backgroundColor: 'rgba(10, 37, 64, 0.75)', // Dark blue overlay so text is readable
+          zIndex: -1
+        }}></div>
+
+        {/* CONTENT */}
+        <h2 style={{ 
+          color: 'white', 
+          fontSize: '3.5rem', 
+          fontWeight: '900', 
+          margin: '0 0 15px 0' 
+        }}>
           Get in Touch.
         </h2>
         
-        <p style={{ color: '#ffffff', fontSize: '1.4rem', maxWidth: '700px', fontWeight: '500', margin: '0 0 10px 0' }}>
-          Ready for the freshest catch in Karur? Reach out to us directly or visit our dock.
-        </p>
-        
-        {/* Container for Centered Details */}
-        <div style={{ 
-          display: 'flex', 
-          flexDirection: 'column', 
-          alignItems: 'center', 
-          gap: '15px', 
-          width: '100%' 
+        <p style={{ 
+          color: '#e0e0e0', 
+          fontSize: '1.2rem', 
+          maxWidth: '600px', 
+          margin: '0 0 40px 0',
+          lineHeight: '1.6'
         }}>
-          <div style={contactDetailStyle}><span>📍</span> Mimisal, Tamil Nadu</div>
-          <div style={contactDetailStyle}><span>📞</span> +91 93636 22272</div>
-          <div style={contactDetailStyle}><span>✉️</span> fresh@stefanseafoods.com</div>
-        </div>
+          Ready for the freshest catch? Reach out to us directly or visit our dock.
+        </p>
 
+        {/* CONTACT INFO PILLS */}
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '15px', alignItems: 'center' }}>
+          
+          {/* Location */}
+          <div style={pillStyle}>
+            <span style={{ fontSize: '1.2rem' }}>📍</span> Mimisal, Tamil Nadu
+          </div>
+
+          {/* Phone (Clickable!) */}
+          <a href="tel:+919363622272" style={{ ...pillStyle, textDecoration: 'none' }}>
+            <span style={{ fontSize: '1.2rem' }}>📞</span> +91 93636 22272
+          </a>
+
+          {/* Email (Clickable!) */}
+          <a href="mailto:fresh@stefanseafoods.com" style={{ ...pillStyle, textDecoration: 'none' }}>
+            <span style={{ fontSize: '1.2rem' }}>✉️</span> fresh@stefanseafoods.com
+          </a>
+
+        </div>
       </div>
     </div>
   );
 }
+
+// Reusable style for the white contact pills
+const pillStyle = {
+  backgroundColor: 'rgba(255, 255, 255, 0.9)',
+  color: '#0A2540',
+  padding: '12px 30px',
+  borderRadius: '30px',
+  fontWeight: 'bold',
+  fontSize: '1.1rem',
+  display: 'flex',
+  alignItems: 'center',
+  gap: '10px',
+  boxShadow: '0 4px 15px rgba(0,0,0,0.1)',
+  transition: 'transform 0.2s ease',
+  cursor: 'pointer'
+};
