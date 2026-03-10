@@ -1,4 +1,4 @@
-import { Suspense, useState } from 'react';
+import { Suspense, useState, useEffect } from 'react';
 import { Canvas } from '@react-three/fiber';
 import { OrthographicCamera } from '@react-three/drei';
 import * as THREE from 'three';
@@ -12,7 +12,17 @@ import MovingTruck from './components/MovingTruck.jsx';
 import Checkout from './components/Checkout.jsx';
 
 export default function App() {
-  const [cart, setCart] = useState([]);
+// 1. Check if there is already a saved cart in the browser's memory
+  const [cart, setCart] = useState(() => {
+    const savedCart = localStorage.getItem('stefanCart');
+    return savedCart ? JSON.parse(savedCart) : [];
+  });
+
+  // 2. Automatically save the cart to memory EVERY time it changes!
+  useEffect(() => {
+    localStorage.setItem('stefanCart', JSON.stringify(cart));
+  }, [cart]);
+  
   const [view, setView] = useState('main'); 
   const [filter, setFilter] = useState('all');
   const [userName, setUserName] = useState('');
@@ -88,24 +98,15 @@ export default function App() {
             <div id="home"><Hero /></div>
             <div id="about"><About /></div>
             
-            <div id="shop" style={{ minHeight: '100vh', scrollSnapAlign: 'start', display: 'flex', flexDirection: 'column', alignItems: 'center', paddingTop: '80px', paddingLeft: '50px', paddingRight: '50px' }}>
+           <div id="shop" style={{ minHeight: '100vh', scrollSnapAlign: 'start', display: 'flex', flexDirection: 'column', alignItems: 'center', paddingTop: '80px', width: '100%', padding: '0 15px', boxSizing: 'border-box' }}>
               <h2 style={{ color: '#0A2540', fontSize: '3rem', fontWeight: '900', marginBottom: '20px' }}>Our Fresh Catch</h2>
               
-              <div style={{ display: 'flex', gap: '15px', marginBottom: '40px' }}>
-                {['all', 'fish', 'prawn', 'crab'].map((cat) => (
-                  <button key={cat} onClick={() => setFilter(cat)} style={{ padding: '10px 25px', borderRadius: '20px', border: 'none', backgroundColor: filter === cat ? '#1ca3de' : 'white', color: filter === cat ? 'white' : '#0A2540', fontWeight: 'bold', cursor: 'pointer', pointerEvents: 'auto' }}>
-                    {cat}
-                  </button>
-                ))}
-              </div>
-              
-              {/* THIS IS THE UPDATED 4-COLUMN CSS GRID */}
-{/* THIS IS THE UPDATED FLEXBOX CONTAINER FOR PERFECT CENTERING */}
+{/* FOOLPROOF FLEXBOX WRAPPER */}
               <div style={{ 
                 display: 'flex', 
-                flexWrap: 'wrap',
+                flexWrap: 'wrap',           /* This tells the cards to drop to the next line! */
                 justifyContent: 'center', 
-                gap: '25px', 
+                gap: '20px', 
                 width: '100%',
                 maxWidth: '1200px' 
               }}>
@@ -119,7 +120,7 @@ export default function App() {
               <Contact />
             </div>
             
-            <div onClick={() => window.open('https://wa.me/919363622272', '_blank')} style={{ position: 'fixed', bottom: '30px', right: '30px', width: '60px', height: '60px', backgroundColor: '#25D366', borderRadius: '50%', display: 'flex', justifyContent: 'center', alignItems: 'center', zIndex: 100, cursor: 'pointer', boxShadow: '0 10px 20px rgba(0,0,0,0.2)', pointerEvents: 'auto' }}>
+            <div onClick={() => window.open('https://wa.me/911111111111', '_blank')} style={{ position: 'fixed', bottom: '30px', right: '30px', width: '60px', height: '60px', backgroundColor: '#25D366', borderRadius: '50%', display: 'flex', justifyContent: 'center', alignItems: 'center', zIndex: 100, cursor: 'pointer', boxShadow: '0 10px 20px rgba(0,0,0,0.2)', pointerEvents: 'auto' }}>
               <span style={{ color: 'white', fontSize: '30px' }}>✆</span>
             </div>
           </div>

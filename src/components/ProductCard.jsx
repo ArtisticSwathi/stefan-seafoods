@@ -4,11 +4,16 @@ export default function ProductCard({ product, onAddToCart }) {
   const [qty, setQty] = useState(1);
 
   return (
-    <div style={{
+<div style={{
       backgroundColor: 'white',
       borderRadius: '20px', 
-      padding: '20px',
-      width: '250px', // Strict width helps Flexbox align them perfectly
+      padding: '15px',
+      
+      /* THE MAGIC FLEXBOX SQUISH RULES */
+      flex: '1 1 200px',    /* Grow and shrink, but start at 200px */
+      minWidth: '160px',    /* Force them to wrap if the screen gets smaller than this */
+      maxWidth: '280px',    /* Don't let them stretch too wide on huge screens */
+      
       display: 'flex',
       flexDirection: 'column',
       justifyContent: 'space-between',
@@ -18,7 +23,6 @@ export default function ProductCard({ product, onAddToCart }) {
       boxShadow: '0 4px 15px rgba(0,0,0,0.05)',
       boxSizing: 'border-box'
     }}>
-      
       {/* Product Image Container */}
       <div style={{ position: 'relative', marginBottom: '15px' }}>
         <div style={{

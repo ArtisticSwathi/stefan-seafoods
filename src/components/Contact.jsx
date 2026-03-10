@@ -72,7 +72,7 @@ export default function Contact() {
 
           {/* Phone (Clickable!) */}
           <a href="tel:+919363622272" style={{ ...pillStyle, textDecoration: 'none' }}>
-            <span style={{ fontSize: '1.2rem' }}>📞</span> +91 93636 22272
+            <span style={{ fontSize: '1.2rem' }}>📞</span> +91 8888555555
           </a>
 
           {/* Email (Clickable!) */}
