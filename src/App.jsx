@@ -94,7 +94,7 @@ const toggleStock = async (id) => {
       `}</style>
 
       <div style={{ fontFamily: 'sans-serif', position: 'relative' }}>
-        <Navbar setView={setView} />
+        <Navbar setView={setView} solid={view === 'admin'} />
 
         <div style={{ position: 'fixed', top: 0, left: 0, width: '100vw', height: '100vh', background: 'linear-gradient(135deg, #1ca3de 0%, #7ed0f5 70%, #ffffff 98%)', zIndex: -1 }}></div>
 
@@ -128,7 +128,7 @@ const toggleStock = async (id) => {
             <div id="home"><Hero /></div>
             <div id="about"><About /></div>
             
-           <div id="shop" style={{ minHeight: '100vh', scrollSnapAlign: 'start', display: 'flex', flexDirection: 'column', alignItems: 'center', paddingTop: '80px', width: '100%', padding: '0 15px', boxSizing: 'border-box' }}>
+           <div id="shop" style={{ minHeight: '100vh', scrollSnapAlign: 'start', display: 'flex', flexDirection: 'column', alignItems: 'center', paddingTop: '100px', width: '100%', padding: '0 15px', boxSizing: 'border-box' }}>
               <h2 style={{ color: '#0A2540', fontSize: '3rem', fontWeight: '900', marginBottom: '20px' }}>Our Fresh Catch</h2>
               
 {/* FOOLPROOF FLEXBOX WRAPPER */}
