@@ -10,6 +10,7 @@ import ProductCard from './components/ProductCard.jsx';
 import Contact from './components/Contact.jsx';
 import MovingTruck from './components/MovingTruck.jsx';
 import Checkout from './components/Checkout.jsx';
+import AdminPanel from './components/AdminPanel';
 
 export default function App() {
 // 1. Check if there is already a saved cart in the browser's memory
@@ -17,28 +18,34 @@ export default function App() {
     const savedCart = localStorage.getItem('stefanCart');
     return savedCart ? JSON.parse(savedCart) : [];
   });
+  
 
   // 2. Automatically save the cart to memory EVERY time it changes!
   useEffect(() => {
     localStorage.setItem('stefanCart', JSON.stringify(cart));
   }, [cart]);
   
+  
   const [view, setView] = useState('main'); 
   const [filter, setFilter] = useState('all');
   const [userName, setUserName] = useState('');
   const [userPhone, setUserPhone] = useState('');
-  const [userAddress, setUserAddress] = useState('');
+const [userAddress, setUserAddress] = useState('');
 
-  const products = [
-    { id: 1, name: 'Fresh Salmon', price: 1800, img: '/fish1.jpg', category: 'fish', stock: true },
-    { id: 2, name: 'King Prawns', price: 950, img: '/fish2.jpg', category: 'prawn', stock: true },
-    { id: 3, name: 'Sea Bass', price: 1200, img: '/fish3.jpg', category: 'fish', stock: false },
-    { id: 4, name: 'Blue Lobster', price: 3500, img: '/fish4.jpg', category: 'crab', stock: true },
-    { id: 5, name: 'Mud Crab', price: 1200, img: '/fish5.jpg', category: 'crab', stock: true },
-    { id: 6, name: 'Fresh Squid', price: 600, img: '/fish6.jpg', category: 'fish', stock: false },
-    { id: 7, name: 'White Pomfret', price: 1400, img: '/fish7.jpg', category: 'fish', stock: true }
-  ];
+  // 1. Set up the empty state for the server data
+  const [products, setProducts] = useState([]);
 
+  // 2. Fetch the data from your Node.js Backend exactly once when the page loads!
+// 2. Fetch the data from your Node.js Backend exactly once when the page loads!
+// 2. Fetch the data from your Node.js Backend exactly once when the page loads!
+  useEffect(() => {
+    fetch('http://localhost:5000/api/products', { cache: 'no-store' }) // <-- ADDED HERE!
+      .then(response => response.json())
+      .then(data => {
+        setProducts(data); 
+      })
+      .catch(error => console.error("Failed to fetch products:", error));
+  }, [view]);
   const filteredProducts = filter === 'all' ? products : products.filter(p => p.category === filter);
 
   const handleAddToCart = (product, quantity) => {
@@ -52,6 +59,24 @@ export default function App() {
       return [...prevCart, { ...product, quantity: quantity }];
     });
   };
+const toggleStock = async (id) => {
+  try {
+    const response = await fetch(`http://localhost:5000/api/products/${id}`, {
+      method: 'PUT',
+    });
+    if (response.ok) {
+      const updatedProduct = await response.json();
+      // Updates BOTH the shop AND the admin panel instantly!
+      setProducts(prev => prev.map(p => p._id === id ? updatedProduct : p));
+    } else {
+      const errorText = await response.text();
+      alert(`Server Error: ${errorText}`);
+    }
+  } catch (error) {
+    console.error("Error updating stock:", error);
+  }
+};
+
 
   const handleOrder = () => {
     if (!userName || !userPhone || !userAddress) return alert("Please fill all delivery details!");
@@ -83,7 +108,12 @@ export default function App() {
           </Canvas>
         </div>
 
-{view === 'checkout' ? (
+{view === 'admin' ? (
+          <div style={{ paddingTop: '100px', minHeight: '100vh', position: 'relative', zIndex: 10 }}>
+            <button onClick={() => setView('main')} style={{ position: 'absolute', top: '20px', left: '20px', padding: '10px', cursor: 'pointer' }}>Back to Shop</button>
+            <AdminPanel products={products} onToggleStock={toggleStock} />
+          </div>
+        ) : view === 'checkout' ? (
           <Checkout 
             cart={cart} 
             setCart={setCart} 
@@ -120,9 +150,17 @@ export default function App() {
               <Contact />
             </div>
             
-            <div onClick={() => window.open('https://wa.me/911111111111', '_blank')} style={{ position: 'fixed', bottom: '30px', right: '30px', width: '60px', height: '60px', backgroundColor: '#25D366', borderRadius: '50%', display: 'flex', justifyContent: 'center', alignItems: 'center', zIndex: 100, cursor: 'pointer', boxShadow: '0 10px 20px rgba(0,0,0,0.2)', pointerEvents: 'auto' }}>
+         <div onClick={() => window.open('https://wa.me/911111111111', '_blank')} style={{ position: 'fixed', bottom: '30px', right: '30px', width: '60px', height: '60px', backgroundColor: '#25D366', borderRadius: '50%', display: 'flex', justifyContent: 'center', alignItems: 'center', zIndex: 100, cursor: 'pointer', boxShadow: '0 10px 20px rgba(0,0,0,0.2)', pointerEvents: 'auto' }}>
               <span style={{ color: 'white', fontSize: '30px' }}>✆</span>
             </div>
+
+            {/* --- SECRET ADMIN BUTTON --- */}
+            <div 
+              onClick={() => setView('admin')} 
+              style={{ position: 'fixed', bottom: '5px', right: '5px', width: '15px', height: '15px', backgroundColor: 'rgba(0,0,0,0.1)', borderRadius: '50%', cursor: 'pointer', zIndex: 100, pointerEvents: 'auto' }}
+              title="Secret Admin Login"
+            ></div>
+
           </div>
         )}
       </div>
