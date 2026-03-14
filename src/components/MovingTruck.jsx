@@ -1,43 +1,48 @@
-import { useRef } from 'react'
+import { useRef, useEffect } from 'react'
 import { useFrame } from '@react-three/fiber'
 import { useGLTF } from '@react-three/drei'
 
 export default function MovingTruck() {
-const truckRef = useRef()
+  const truckRef = useRef()
   const { scene } = useGLTF('/truck.glb')
-useFrame((state) => {
-  if (!truckRef.current) return
-  const { viewport } = state
+  const scrollRef = useRef(0)
 
-  // Calculate exactly how far we've scrolled
-  const scrollY = window.scrollY
-  const maxScroll = document.documentElement.scrollHeight - window.innerHeight
+  useEffect(() => {
+    const handleScroll = () => { scrollRef.current = window.scrollY }
+    window.addEventListener('scroll', handleScroll, { passive: true })
+    return () => window.removeEventListener('scroll', handleScroll)
+  }, [])
 
-  // Ensure we don't divide by zero if the page is short
-  const scrollProgress = maxScroll <= 0 ? 0 : scrollY / maxScroll
+  useFrame((state) => {
+    if (!truckRef.current) return
+    const { viewport } = state
 
-  // Push the truck higher so it starts off-screen
-  const top = viewport.height / 2 + 1.2 
-  const bottom = -viewport.height / 2 - 1.2
+    const scrollY = scrollRef.current
+    const maxScroll = document.documentElement.scrollHeight - window.innerHeight
+    const scrollProgress = maxScroll <= 0 ? 0 : scrollY / maxScroll
 
-  // The truck now maps its Y position to the FULL length of the page
-  const targetY = top - scrollProgress * (top - bottom)
+    const top = viewport.height / 2 + 1.2
+    const bottom = -viewport.height / 2 - 1.2
+    const targetY = top - scrollProgress * (top - bottom)
+    truckRef.current.position.y += (targetY - truckRef.current.position.y) * 0.05
 
-  // Smooth movement
-  truckRef.current.position.y += (targetY - truckRef.current.position.y) * 0.05
+    const isMobile = window.innerWidth <= 767
 
-  // Keep it on the right edge
-  const edgeOffset = 0.3
-  truckRef.current.position.x = viewport.width / 2 - edgeOffset
-})
+    // On mobile: push truck to the very right edge (same as desktop scrollbar position)
+    // Desktop uses edgeOffset 0.3, mobile needs less offset to sit right at edge
+    const edgeOffset = isMobile ? 0.05 : 0.3
+    truckRef.current.position.x = viewport.width / 2 - edgeOffset
+
+    // Scale: smaller on mobile
+    truckRef.current.scale.setScalar(isMobile ? 0.11 : 0.2)
+  })
+
   return (
-<primitive
-  ref={truckRef}
-  object={scene}
-  scale={0.2}
-rotation={[-Math.PI / 2, Math.PI, -Math.PI / 2]}
-
-
-/>
+    <primitive
+      ref={truckRef}
+      object={scene}
+      scale={0.2}
+      rotation={[-Math.PI / 2, Math.PI, -Math.PI / 2]}
+    />
   )
 }
