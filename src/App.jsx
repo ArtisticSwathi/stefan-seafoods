@@ -234,8 +234,8 @@ export default function App() {
             <button
               onClick={() => window.open('https://wa.me/911234567891', '_blank')}
               style={{
-                position: 'fixed', bottom: '30px', right: '30px',
-                width: '58px', height: '58px', backgroundColor: '#25D366',
+                position: 'fixed', bottom: '5px', right: '10px',
+                width: '52px', height: '52px', backgroundColor: '#25D366',
                 borderRadius: '50%', display: 'flex', justifyContent: 'center',
                 alignItems: 'center', zIndex: 100, cursor: 'pointer',
                 boxShadow: '0 6px 20px rgba(0,0,0,0.25)',
