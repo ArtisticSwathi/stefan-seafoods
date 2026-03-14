@@ -30,7 +30,7 @@ export default function MovingTruck() {
 
     // On mobile: push truck to the very right edge (same as desktop scrollbar position)
     // Desktop uses edgeOffset 0.3, mobile needs less offset to sit right at edge
-    const edgeOffset = isMobile ? 0.05 : 0.3
+    const edgeOffset = isMobile ? 0.09 : 0.3
     truckRef.current.position.x = viewport.width / 2 - edgeOffset
 
     // Scale: smaller on mobile
