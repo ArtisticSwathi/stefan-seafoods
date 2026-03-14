@@ -12,9 +12,7 @@ import MovingTruck from './components/MovingTruck.jsx';
 import Checkout from './components/Checkout.jsx';
 import AdminPanel from './components/AdminPanel';
 
-const BASE_URL = window.location.hostname === 'localhost'
-  ? 'http://localhost:5000'
-  : 'http://192.168.1.34:5000';
+const BASE_URL = 'https://stefan-seafoods-backend.onrender.com';
 
 // Category emoji map
 const CATEGORY_EMOJI = { fish: '🐟', prawn: '🦐', crab: '🦀', squid: '🦑', lobster: '🦞' };
