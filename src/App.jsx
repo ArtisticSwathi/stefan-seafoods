@@ -118,7 +118,7 @@ export default function App() {
 
         <div style={{ position: 'fixed', top: 0, left: 0, width: '100vw', height: '100vh', background: 'linear-gradient(135deg, #1ca3de 0%, #7ed0f5 70%, #ffffff 98%)', zIndex: -1 }} />
 
-        <div style={{ position: 'fixed', top: 0, left: 0, width: '100vw', height: '100vh', zIndex: 0, pointerEvents: 'none' }}>
+        <div style={{ position: 'fixed', top: 0, left: 0, width: '100vw', height: '100vh', zIndex: 10, pointerEvents: 'none' }}>
           <Canvas gl={{ antialias: true, toneMapping: THREE.NoToneMapping }}>
             <OrthographicCamera makeDefault position={[0, 0, 10]} zoom={100} />
             <ambientLight intensity={2} />
