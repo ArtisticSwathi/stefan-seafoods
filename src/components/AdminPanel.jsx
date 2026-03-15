@@ -1,9 +1,7 @@
 import { useState, useEffect } from 'react';
 import AdminLogin from './AdminLogin';
 
-const BASE_URL = window.location.hostname === 'localhost'
-  ? 'http://localhost:5000'
-  : 'http://192.168.1.34:5000';
+const BASE_URL = 'https://stefan-seafoods-backend.onrender.com';
 
 const THEME = {
   navy: '#0A2540', ocean: '#1ca3de', bg: '#f0f6fb', white: '#ffffff',
