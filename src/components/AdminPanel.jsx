@@ -13,6 +13,7 @@ const THEME = {
 const GRID = '64px 1fr 100px 110px 120px 220px';
 
 const AdminPanel = ({ products, onToggleStock, onExit }) => {
+  const [localProducts, setLocalProducts] = useState(products);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [editingId, setEditingId] = useState(null);
   const [editPrice, setEditPrice] = useState('');
@@ -34,7 +35,7 @@ const AdminPanel = ({ products, onToggleStock, onExit }) => {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ price: Number(editPrice), img: editImg }),
       });
-      if (res.ok) { setEditingId(null); window.location.reload(); }
+      if (res.ok) { const updated = await res.json(); setLocalProducts(prev => prev.map(p => p._id === id ? updated : p)); setEditingId(null); }
       else alert('Failed to update. Check backend.');
     } catch (err) { alert('Network error: ' + err.message); }
     setSaving(false);
@@ -42,8 +43,8 @@ const AdminPanel = ({ products, onToggleStock, onExit }) => {
 
   if (!isLoggedIn) return <AdminLogin onLoginSuccess={() => setIsLoggedIn(true)} />;
 
-  const inStockCount = products.filter(p => p.inStock).length;
-  const outStockCount = products.filter(p => !p.inStock).length;
+  const inStockCount = localProducts.filter(p => p.inStock).length;
+  const outStockCount = localProducts.filter(p => !p.inStock).length;
 
   return (
     <div style={{ minHeight: '100vh', background: THEME.bg, fontFamily: '"Segoe UI", system-ui, sans-serif' }}>
@@ -112,7 +113,7 @@ const AdminPanel = ({ products, onToggleStock, onExit }) => {
         {/* Stats */}
         <div style={{ display: 'flex', gap: '12px', marginBottom: '24px', flexWrap: 'wrap' }}>
           {[
-            { label: 'Total', value: products.length, color: THEME.ocean, border: THEME.border },
+            { label: 'Total', value: localProducts.length, color: THEME.ocean, border: THEME.border },
             { label: 'In Stock', value: inStockCount, color: THEME.green, border: '#b6e9d8' },
             { label: 'Out of Stock', value: outStockCount, color: THEME.red, border: '#f5c6c3' },
           ].map(s => (
@@ -217,7 +218,7 @@ const AdminPanel = ({ products, onToggleStock, onExit }) => {
             </div>
 
             {/* Rows */}
-            {products.map((product, i) => (
+            {localProducts.map((product, i) => (
               <div key={product._id} style={{ borderBottom: i < products.length - 1 ? `1px solid ${THEME.border}` : 'none' }}>
                 <div style={{ display: 'grid', gridTemplateColumns: GRID, gap: '0 12px', alignItems: 'center', padding: '14px 20px', background: product.inStock ? THEME.white : '#fffafa' }}>
                   <img src={product.img} alt={product.name} style={{ width: '48px', height: '48px', borderRadius: '10px', objectFit: 'cover', border: `1.5px solid ${THEME.border}` }} onError={e => { e.currentTarget.style.background = '#eee'; e.currentTarget.src = ''; }} />
